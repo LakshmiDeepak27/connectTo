@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -11,9 +11,30 @@ import Departments from './pages/Departments';
 import Assignments from './pages/Assignments';
 import Profile from './pages/Profile';
 
+// TokenHandler component to extract tokens from URL and store in localStorage
+function TokenHandler() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const access = params.get('access');
+    const refresh = params.get('refresh');
+    if (access && refresh) {
+      localStorage.setItem('access', access);
+      localStorage.setItem('refresh', refresh);
+      // Remove tokens from URL for cleanliness
+      navigate('/profile/me', { replace: true });
+    }
+  }, [location, navigate]);
+
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <TokenHandler />
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="flex">

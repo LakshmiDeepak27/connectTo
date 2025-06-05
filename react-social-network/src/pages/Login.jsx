@@ -16,8 +16,8 @@ const Login = () => {
 
     try {
       const response = await authAPI.login({ username, password });
-      // Assuming the backend returns tokens in response.data.tokens
-      const { access, refresh } = response.data.tokens;
+      // Expect backend to return access and refresh directly
+      const { access, refresh } = response.data;
       localStorage.setItem('token', access);
       localStorage.setItem('refreshToken', refresh);
       navigate('/profile/me'); // Redirect to profile page on successful login

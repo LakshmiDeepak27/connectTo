@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const instance = axios.create({
-  baseURL: 'http://localhost:8000/',
+  baseURL: 'http://localhost:8000',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
 
     // If the error is 401 and we haven't tried to refresh the token yet
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
@@ -84,16 +84,14 @@ export const postsAPI = {
 // Profile related API calls
 export const profileAPI = {
   getProfile: () => instance.get('/api/profiles/me/'),
-  updateProfile: (profileData) => instance.put('/api/profiles/me/', profileData),
-  uploadProfilePicture: (file) => {
-    const formData = new FormData();
-    formData.append('profile_picture', file);
-    return instance.put('/api/profiles/me/picture/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
+  updateProfile: (data) => instance.patch('/api/profiles/me/', data),
+  getMyPosts: () => instance.get('/api/profiles/me/my_posts/'),
+  uploadProfilePicture: (formData) => instance.post('/api/profiles/me/upload_profile_picture/', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }),
+  deleteProfilePicture: () => instance.delete('/api/profiles/me/delete_profile_picture/'),
 };
 
 // Users related API calls

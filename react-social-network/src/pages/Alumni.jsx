@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { default as instance } from '../api/axios';
 import { Search, CheckCircle, Mail, Linkedin, GraduationCap } from 'lucide-react';
 
 const Alumni = () => {
@@ -43,6 +43,12 @@ const Alumni = () => {
         }
     };
 
+    const getMediaUrl = (url) => {
+        if (!url) return null;
+        if (url.startsWith('http')) return url;
+        return `${instance.defaults.baseURL}${url.startsWith('/') ? url.slice(1) : url}`;
+    };
+
     if (loading) {
         return <div className="flex justify-center items-center h-64">Loading...</div>;
     }
@@ -68,7 +74,7 @@ const Alumni = () => {
                         <div className="flex items-center space-x-4">
                             <div className="relative">
                                 <img
-                                    src={alum.profile_picture || 'https://via.placeholder.com/50'}
+                                    src={getMediaUrl(alum.profile_picture) || 'https://via.placeholder.com/50'}
                                     alt={alum.name}
                                     className="w-14 h-14 rounded-full border-2 border-blue-200"
                                 />

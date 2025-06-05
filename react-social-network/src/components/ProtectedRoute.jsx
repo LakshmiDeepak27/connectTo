@@ -13,6 +13,13 @@ const ProtectedRoute = ({ children }) => {
 
   console.log('ProtectedRoute component rendered.', { isAuthenticated, loading, search: location.search, hasToken: !!hasToken });
 
+  // Redirect to login if not authenticated (must be before any return)
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = 'http://localhost:8000/signin/';
+    }
+  }, [loading, isAuthenticated]);
+
   useEffect(() => {
     console.log('ProtectedRoute useEffect running.', { isAuthenticated, loading, search: location.search });
     const checkAuth = () => {
@@ -98,13 +105,6 @@ const ProtectedRoute = ({ children }) => {
       </div>
     );
   }
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      window.location.href = 'http://localhost:8000/signin/';
-    }
-  }, [loading, isAuthenticated]);
 
   if (isAuthenticated === null) {
     return null; // Don't render anything until auth check is complete

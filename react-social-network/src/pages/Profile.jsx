@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from '../api/axios';
+import { profileAPI } from '../api/axios';
 import PostCard from '../components/PostCard';
 import { Camera, Edit2, Save, X, User, Mail, Calendar, MapPin, MessageCircle, Award, BookOpen, Users, Calendar as CalendarIcon, Briefcase } from 'lucide-react';
 import { FaUserPlus, FaUserCheck, FaGraduationCap, FaBuilding, FaBook, FaAward, FaUsers, FaCalendarAlt, FaProjectDiagram, FaCertificate } from 'react-icons/fa';
@@ -32,106 +32,73 @@ const Profile = () => {
   // State to store the authenticated user's ID
   const [authenticatedUserId, setAuthenticatedUserId] = useState(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      setError(null); // Clear errors at the start of a new fetch
+  const fetchProfile = async () => {
+    setLoading(true);
+    setError(null);
 
-      const isMeRoute = id === undefined || id === 'me'; // Check if it's the 'me' route
+    const isMeRoute = id === undefined || id === 'me';
 
-      try {
-        // Use the correct API endpoints
-        const profileUrl = isMeRoute ? '/api/profiles/me/' : `/api/profiles/${id}/`;
-        const postsUrl = isMeRoute ? '/api/profiles/me/posts/' : `/api/profiles/${id}/posts/`;
+    try {
+      // Use profileAPI instead of direct axios calls
+      const profileResponse = await profileAPI.getProfile();
+      const profileData = profileResponse.data;
 
-        const profileResponse = await axios.get(profileUrl);
-        const profileData = profileResponse.data;
-
-        // If we have profile data, fetch posts and update state
-        if (profileData) {
-          try {
-            const postsResponse = await axios.get(postsUrl);
-            setPosts(postsResponse.data);
-          } catch (postsErr) {
-            console.error('Failed to fetch posts:', postsErr);
-            setPosts([]);
-          }
-
-          setProfile(profileData);
-          
-          // Store the authenticated user's ID if fetching 'me' profile
-          if (isMeRoute && profileData.id) {
-            setAuthenticatedUserId(profileData.id);
-            console.log('Stored authenticated user ID:', profileData.id);
-          }
-
-          // Update form data with profile data
-          setFormData({
-            username: profileData.username || '',
-            email: profileData.email || '',
-            bio: profileData.bio || '',
-            location: profileData.location || '',
-            website: profileData.website || '',
-            education: profileData.education || '',
-            major: profileData.major || '',
-            graduationYear: profileData.graduationYear || '',
-            interests: profileData.interests || '',
-            achievements: Array.isArray(profileData.achievements) ? profileData.achievements : []
-          });
-          setIsEditing(false);
-        } else if (isMeRoute) {
-          // If no profile data and it's the 'me' route, show the create profile form
-          setProfile(null);
-          setPosts([]);
-          setFormData({
-            username: '',
-            email: '',
-            bio: '',
-            location: '',
-            website: '',
-            education: '',
-            major: '',
-            graduationYear: '',
-            interests: '',
-            achievements: []
-          });
-          setIsEditing(true);
+      if (profileData) {
+        try {
+          const postsResponse = await profileAPI.getMyPosts();
+          // Ensure posts is always an array
+          setPosts(Array.isArray(postsResponse.data) ? postsResponse.data : []);
+        } catch (postsErr) {
+          console.error('[Profile] Failed to fetch posts:', postsErr);
+          setPosts([]); // Set empty array on error
         }
-      } catch (err) {
-        console.error('Failed to fetch profile:', err);
-        if (isMeRoute) {
-          if (err.response?.status === 401) {
-            navigate('/login');
-            setError('Please log in to view your profile.');
-          } else {
-            // For other errors on 'me' route, show create profile form
-            setProfile(null);
-            setPosts([]);
-            setFormData({
-              username: '',
-              email: '',
-              bio: '',
-              location: '',
-              website: '',
-              education: '',
-              major: '',
-              graduationYear: '',
-              interests: '',
-              achievements: []
-            });
-            setIsEditing(true);
-            setError(null);
-          }
-        } else {
-          setError('Failed to fetch profile data');
-          setProfile(null);
-          setPosts([]);
+
+        setProfile(profileData);
+        if (isMeRoute && profileData.id) {
+          setAuthenticatedUserId(profileData.id);
+          console.log('[Profile] Stored authenticated user ID:', profileData.id);
         }
-      } finally {
-        setLoading(false);
+        setFormData({
+          username: profileData.username || '',
+          email: profileData.email || '',
+          bio: profileData.bio || '',
+          location: profileData.location || '',
+          website: profileData.website || '',
+          education: profileData.education || '',
+          major: profileData.major || '',
+          graduationYear: profileData.graduationYear || '',
+          interests: profileData.interests || '',
+          achievements: Array.isArray(profileData.achievements) ? profileData.achievements : []
+        });
+        setIsEditing(false);
+      } else if (isMeRoute) {
+        setProfile(null);
+        setPosts([]); // Ensure posts is empty array when no profile
+        setFormData({
+          username: '',
+          email: '',
+          bio: '',
+          location: '',
+          website: '',
+          education: '',
+          major: '',
+          graduationYear: '',
+          interests: '',
+          achievements: []
+        });
+        setIsEditing(true);
       }
-    };
+    } catch (error) {
+      console.error('[Profile] Failed to fetch profile:', error);
+      setError('Failed to load profile. Please try again.');
+      setPosts([]); // Ensure posts is empty array on error
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    console.log('[Profile] useEffect: token in localStorage:', localStorage.getItem('token'));
     fetchProfile();
   }, [id, navigate]);
 
@@ -145,34 +112,73 @@ const Profile = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setSaving(true);
     try {
-      setSaving(true);
-      setError(null); // Clear any previous errors
-      
-      let response;
-      if (!profile && id === 'me') {
-        // Creating a new profile for the logged-in user
-        console.log('Attempting to create new profile for logged-in user.');
-        response = await axios.post('/api/profiles/', formData);
-        setProfile(response.data);
-        if (response.data && response.data.id) {
-          setAuthenticatedUserId(response.data.id);
-          console.log('New profile created. Stored authenticated user ID:', response.data.id);
+        // Format the data properly
+        const profileData = {
+            user: {
+                username: formData.username,
+                email: formData.email
+            },
+            bio: formData.bio || '',
+            location: formData.location || '',
+            website: formData.website || '',
+            education: formData.education || '',
+            major: formData.major || '',
+            graduation_year: formData.graduationYear || '',
+            interests: formData.interests || '',
+            achievements: formData.achievements || []
+        };
+
+        console.log('Sending profile data:', profileData);
+        
+        // Check if we have a valid token
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No authentication token found');
         }
-      } else {
-        // Updating an existing profile
-        console.log('Attempting to update profile...');
-        response = await axios.put('/api/profiles/me/', formData);
+
+        const response = await profileAPI.updateProfile(profileData);
+        console.log('Profile update response:', response);
+
+        if (!response.data) {
+            throw new Error('No data received from server');
+        }
+
+        // Update the profile state with the response data
         setProfile(response.data);
-      }
-      
-      setIsEditing(false);
+        
+        // Update form data with the response
+        setFormData({
+            username: response.data.user?.username || '',
+            email: response.data.user?.email || '',
+            bio: response.data.bio || '',
+            location: response.data.location || '',
+            website: response.data.website || '',
+            education: response.data.education || '',
+            major: response.data.major || '',
+            graduationYear: response.data.graduation_year || '',
+            interests: response.data.interests || '',
+            achievements: response.data.achievements || []
+        });
+
+        setIsEditing(false);
+        setError(null);
+        
+        // Show success message
+        alert('Profile updated successfully!');
+        
     } catch (err) {
-      console.error('Error saving profile:', err);
-      setError(err.response?.data?.message || 'Failed to save profile. Please try again.');
-      // Don't update local state on error
+        console.error('Error updating profile:', err);
+        console.error('Error details:', {
+            message: err.message,
+            response: err.response?.data,
+            status: err.response?.status
+        });
+        setError(err.response?.data?.error || err.message || 'Failed to update profile');
+        alert('Failed to update profile. Please try again.');
     } finally {
-      setSaving(false);
+        setSaving(false);
     }
   };
 
@@ -197,23 +203,32 @@ const Profile = () => {
     if (!file) return;
 
     try {
-      const formData = new FormData();
-      formData.append('profile_picture', file);
-      const response = await axios.post('/api/users/upload_profile_picture/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      setProfile(prev => ({
-        ...prev,
-        profile_picture: response.data.profile_picture
-      }));
+      setLoading(true);
+      const response = await profileAPI.uploadProfilePicture(file);
+      setProfile(response.data);
+      setError(null);
     } catch (error) {
       console.error('Error uploading profile picture:', error);
-      // Mock URL for demo
-      const mockUrl = URL.createObjectURL(file);
+      setError('Failed to upload profile picture. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProfilePicture = async () => {
+    try {
+      setLoading(true);
+      await profileAPI.deleteProfilePicture();
       setProfile(prev => ({
         ...prev,
-        profile_picture: mockUrl
+        profile_picture: null
       }));
+      setError(null);
+    } catch (error) {
+      console.error('Error deleting profile picture:', error);
+      setError('Failed to delete profile picture. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -226,11 +241,18 @@ const Profile = () => {
 
   const handleFollow = async () => {
     try {
-      await axios.post(`/api/users/${id}/follow/`);
+      await profileAPI.followUser(id);
       fetchProfile();
     } catch (error) {
       console.error('Error following user:', error);
     }
+  };
+
+  // Add a function to get the full URL for media files
+  const getMediaUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    return `http://localhost:8000${url.startsWith('/') ? url : `/${url}`}`;
   };
 
   if (loading) return <div className="text-center mt-8">Loading...</div>;
@@ -416,7 +438,7 @@ const Profile = () => {
                   <div className="w-32 h-32 rounded-full border-4 border-white bg-gray-100 overflow-hidden">
                     {profile?.profile_picture ? (
                       <img
-                        src={profile.profile_picture}
+                        src={getMediaUrl(profile.profile_picture)}
                         alt={profile.username}
                         className="w-full h-full object-cover"
                       />

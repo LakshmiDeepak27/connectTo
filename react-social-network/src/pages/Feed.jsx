@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { default as instance } from '../api/axios';
 import { FaHeart, FaComment, FaShare, FaUserPlus } from 'react-icons/fa';
 
 const Feed = () => {
@@ -21,7 +21,7 @@ const Feed = () => {
 
     const fetchPosts = async () => {
         try {
-            const response = await axios.get('/api/posts/feed/');
+            const response = await axios.get('/api/posts/');
             setPosts(response.data);
             setLoading(false);
         } catch (error) {
@@ -32,7 +32,7 @@ const Feed = () => {
 
     const fetchSuggestedUsers = async () => {
         try {
-            const response = await axios.get('/api/users/suggested/');
+            const response = await axios.get('/api/users/');
             setSuggestedUsers(response.data);
         } catch (error) {
             console.error('Error fetching suggested users:', error);
@@ -50,7 +50,7 @@ const Feed = () => {
 
             await axios.post('/api/posts/', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'change the things multipart/form-data'
                 }
             });
             setNewPost({ content: '', image: null });
@@ -76,6 +76,12 @@ const Feed = () => {
         } catch (error) {
             console.error('Error following user:', error);
         }
+    };
+
+    const getMediaUrl = (url) => {
+        if (!url) return null;
+        if (url.startsWith('http')) return url;
+        return `${instance.defaults.baseURL}${url.startsWith('/') ? url.slice(1) : url}`;
     };
 
     if (loading) {
@@ -119,7 +125,7 @@ const Feed = () => {
                         <div key={user.id} className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
                                 <img
-                                    src={user.profile_picture || 'https://via.placeholder.com/40'}
+                                    src={getMediaUrl(user.profile_picture) || 'https://via.placeholder.com/40'}
                                     alt={user.name}
                                     className="w-10 h-10 rounded-full"
                                 />
@@ -146,7 +152,7 @@ const Feed = () => {
                     <div key={post.id} className="bg-white rounded-lg shadow-md p-6">
                         <div className="flex items-center space-x-3 mb-4">
                             <img
-                                src={post.author.profile_picture || 'https://via.placeholder.com/40'}
+                                src={getMediaUrl(post.author.profile_picture) || 'https://via.placeholder.com/40'}
                                 alt={post.author.name}
                                 className="w-10 h-10 rounded-full"
                             />
@@ -162,7 +168,7 @@ const Feed = () => {
                         
                         {post.image && (
                             <img
-                                src={post.image}
+                                src={getMediaUrl(post.image)}
                                 alt="Post attachment"
                                 className="rounded-lg mb-4 max-h-96 w-full object-cover"
                             />
@@ -196,7 +202,7 @@ const Feed = () => {
                                     {post.comments.map((comment) => (
                                         <div key={comment.id} className="flex space-x-3">
                                             <img
-                                                src={comment.author.profile_picture || 'https://via.placeholder.com/32'}
+                                                src={getMediaUrl(comment.author.profile_picture) || 'https://via.placeholder.com/32'}
                                                 alt={comment.author.name}
                                                 className="w-8 h-8 rounded-full"
                                             />
