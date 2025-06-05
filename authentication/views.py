@@ -407,11 +407,21 @@ def verify_otp(request):
             return redirect('signin')
     return redirect('signin')
 
+@csrf_exempt
 def user_logout(request):
     if request.user.is_authenticated:
         # Update user profile
         profile = UserProfile.objects.get(user=request.user)
         profile.logout()
     logout(request)
+    
+    # Handle API request (from React app)
+    if request.headers.get('Accept') == 'application/json':
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Logged out successfully'
+        })
+    
+    # Handle regular request (from Django templates)
     messages.success(request, "You have been logged out successfully.")
-    return redirect('http://localhost:5137/signin')
+    return redirect('signin')

@@ -7,10 +7,27 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    window.location.replace('http://localhost:8000/signin');
+  const handleLogout = async () => {
+    try {
+      // Call Django logout endpoint
+      await fetch('http://localhost:8000/logout/', {
+        method: 'POST',
+        credentials: 'include', // This is important for handling cookies
+      });
+      
+      // Clear tokens from localStorage
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      
+      // Redirect to Django signin page
+      window.location.href = 'http://localhost:8000/signin/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if the API call fails, clear tokens and redirect
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      window.location.href = 'http://localhost:8000/signin/';
+    }
   };
 
   const toggleMobileMenu = () => {

@@ -100,35 +100,14 @@ const ProtectedRoute = ({ children }) => {
   }
 
   // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    console.log('ProtectedRoute: Not authenticated, rendering login prompt.');
-    // Create a simple login page redirect
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Welcome to SocialNet</h2>
-            <p className="text-gray-600 mb-6">Please log in to continue</p>
-            <div className="space-y-4">
-              <button 
-                onClick={() => {
-                  // Mock login - in real app, this would be a proper login form
-                  const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNzM1NzM5MjAwfQ.mock_signature';
-                  localStorage.setItem('token', mockToken);
-                  window.location.reload();
-                }}
-                className="w-full btn-primary"
-              >
-                Demo Login
-              </button>
-              <p className="text-sm text-gray-500">
-                Click "Demo Login" to access the app with a demo account
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = 'http://localhost:8000/signin/';
+    }
+  }, [loading, isAuthenticated]);
+
+  if (isAuthenticated === null) {
+    return null; // Don't render anything until auth check is complete
   }
 
   // Return protected content if authenticated
