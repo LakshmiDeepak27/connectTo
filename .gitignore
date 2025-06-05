@@ -1,0 +1,34 @@
+# Python virtual environment
+venv/
+.env/
+env/
+ENV/
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+media/
+
+# VSCode settings (optional)
+.vscode/
+
+# Python environment files
+*.env
+*.env.*
+
+# MacOS
+.DS_Store
+
+# Pytest
+.pytest_cache/
+
+# Migrations (optional, if you don’t want to track them)
+**/migrations/*.py
+!**/migrations/__init__.py

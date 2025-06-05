@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    {%load static %}
+    <link rel="stylesheet" href="{% static 'authentication/style1.css' %}" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"  
+      rel="stylesheet"
+    />
+  </head>
+  <body id="department">
+    
+    <div class="wrap">
+      {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>Message:</strong> {{ message }}
+        <button type="button" data-dismiss="alert" >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+      <form action="{% url 'signin' %}" method="POST">
+        {% csrf_token %}
+        <h1>Login</h1>
+        
+        <div class="auth-type">
+          <label>
+            <input type="radio" name="auth_type" value="email" id="auth_email" checked> Email Authentication
+          </label>
+          <label>
+            <input type="radio" name="auth_type" value="otp" id="auth_otp"> Mobile OTP Authentication
+          </label>
+        </div>
+
+        <div class="input-box">
+          <label for="username">Username</label>
+          <input type="text" placeholder="Username" id="username" name="username" required />
+          <i class="bx bxs-user"></i>
+        </div>
+
+        <div id="email-fields">
+          <div class="input-box">
+            <label for="password">Password</label>
+            <input type="password" placeholder="Enter your Password" id="password" name="pass1" />
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+        </div>
+
+        <div id="otp-fields" style="display:none;">
+          <div class="input-box">
+            <label for="mobile">Mobile Number</label>
+            <input type="tel" id="mobile" placeholder="Enter your Mobile Number (e.g., +91XXXXXXXXXX)" 
+                   name="mobile" maxlength="15" pattern="^\+?[0-9]{10,15}$" 
+                   title="Please enter a valid mobile number starting with +91" />
+            <i class='bx bx-mobile'></i>
+          </div>
+        </div>
+
+        <div class="remeber-forgot">
+          <label><input type="checkbox" />Remember me </label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="button">Login</button>
+        <div class="register-login">
+          <p>Don't have an account? <a href="{% url 'signup' %}">Register</a></p>
+        </div>
+      </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailRadio = document.getElementById('auth_email');
+            const otpRadio = document.getElementById('auth_otp');
+            const emailFields = document.getElementById('email-fields');
+            const otpFields = document.getElementById('otp-fields');
+            const passwordInput = document.getElementById('password');
+            const mobileInput = document.getElementById('mobile');
+
+            function toggleFields() {
+                if (emailRadio.checked) {
+                    emailFields.style.display = 'block';
+                    otpFields.style.display = 'none';
+                    passwordInput.setAttribute('required', '');
+                    mobileInput.removeAttribute('required');
+                } else if (otpRadio.checked) {
+                    emailFields.style.display = 'none';
+                    otpFields.style.display = 'block';
+                    passwordInput.removeAttribute('required');
+                    mobileInput.setAttribute('required', '');
+                }
+            }
+
+            // Format mobile number as user types
+            mobileInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    if (!value.startsWith('91')) {
+                        value = '91' + value;
+                    }
+                    if (!value.startsWith('+')) {
+                        value = '+' + value;
+                    }
+                }
+                e.target.value = value;
+            });
+
+            emailRadio.addEventListener('change', toggleFields);
+            otpRadio.addEventListener('change', toggleFields);
+
+            // Initial call to set the correct fields on page load
+            toggleFields();
+        });
+    </script>
+
+  </body>
+</html>

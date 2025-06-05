@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'authentication/style1.css' %}" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+<body id="department">
+    <div class="wrap">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <strong>Message:</strong> {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        
+        <!-- OTP Verification Form -->
+        <form action="{% url 'verify_otp' %}" method="POST">
+            {% csrf_token %}
+            <h1>Verify OTP</h1>
+            <div class="input-box">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ username }}" readonly style="background:#f0f0f0;" />
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <label for="mobile">Mobile Number</label>
+                <input type="text" id="mobile" name="mobile" value="{{ mobile }}" readonly style="background:#f0f0f0;" />
+                <i class='bx bx-mobile'></i>
+            </div>
+            <div class="input-box">
+                <label for="otp">OTP</label>
+                <input type="text" id="otp" placeholder="Enter OTP" name="otp" required maxlength="6" pattern="[0-9]{6}" autocomplete="off" inputmode="numeric" />
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+            <button type="submit" class="button">Verify OTP</button>
+        </form>
+
+        <!-- Resend OTP Form -->
+        <form action="{% url 'resend_otp' %}" method="POST" style="margin-top: 20px;">
+            {% csrf_token %}
+            <input type="hidden" name="username" value="{{ username }}">
+            <input type="hidden" name="mobile" value="{{ mobile }}">
+            <button type="submit" class="button" style="background: #4CAF50;">Resend OTP</button>
+        </form>
+
+        <div class="register-login" style="margin-top: 20px; text-align: center;">
+            <p>Or <a href="{% url 'signin' %}">Try Again</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var alerts = document.getElementsByClassName('alert');
+                for(var i = 0; i < alerts.length; i++) {
+                    alerts[i].style.display = 'none';
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html> 

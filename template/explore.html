@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Resources - Konnectia</title>
+
+    {% load static %} 
+    <link rel="stylesheet" href="{% static 'explore_resources.css' %}">
+    <!-- <link rel="stylesheet" href="../static/explore_resources.css"> -->
+    <!-- Added Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="explore_resources.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">Konnectia</a>
+            <a href="/" class="nav-back">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="floating-particles" id="particles"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Explore Resources</h1>
+            <p class="hero-subtitle">Discover innovative tools, guides, and testimonials to enhance your academic journey</p>
+        </div>
+    </section>
+
+    <!-- Spotlight Section -->
+    <section class="spotlight-section">
+        <div class="spotlight-container">
+            <h2 class="section-title fade-in">Resource Spotlight</h2>
+            
+            <div class="spotlight-grid">
+                <div class="spotlight-card fade-in">
+                    <div class="spotlight-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="spotlight-title">AI Learning Assistant</h3>
+                    <p class="spotlight-description">Experience personalized learning with our advanced AI-powered study companion that adapts to your learning style.</p>
+                    <ul class="spotlight-features">
+                        <li>Personalized study plans</li>
+                        <li>Real-time progress tracking</li>
+                        <li>Interactive problem solving</li>
+                        <li>Smart content recommendations</li>
+                    </ul>
+                    <button class="explore-btn">Explore Now</button>
+                </div>
+
+                <div class="spotlight-card fade-in">
+                    <div class="spotlight-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h3 class="spotlight-title">Collaborative Workspace</h3>
+                    <p class="spotlight-description">Connect with peers and faculty in our immersive virtual collaboration environment designed for modern learning.</p>
+                    <ul class="spotlight-features">
+                        <li>Real-time collaboration tools</li>
+                        <li>Interactive whiteboards</li>
+                        <li>Project management system</li>
+                        <li>Peer review platform</li>
+                    </ul>
+                    <button class="explore-btn">Discover More</button>
+                </div>
+
+                <div class="spotlight-card fade-in">
+                    <div class="spotlight-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="spotlight-title">Analytics Dashboard</h3>
+                    <p class="spotlight-description">Gain insights into your academic performance with comprehensive analytics and predictive learning outcomes.</p>
+                    <ul class="spotlight-features">
+                        <li>Performance analytics</li>
+                        <li>Learning pattern insights</li>
+                        <li>Goal tracking system</li>
+                        <li>Predictive recommendations</li>
+                    </ul>
+                    <button class="explore-btn">View Dashboard</button>
+                </div>
+
+                <div class="spotlight-card fade-in">
+                    <div class="spotlight-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="spotlight-title">Skill Certification</h3>
+                    <p class="spotlight-description">Earn industry-recognized certifications through our comprehensive skill-building programs and assessments.</p>
+                    <ul class="spotlight-features">
+                        <li>Industry-standard certifications</li>
+                        <li>Hands-on project assessments</li>
+                        <li>Expert-led evaluations</li>
+                        <li>Career pathway guidance</li>
+                    </ul>
+                    <button class="explore-btn">Start Learning</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <h2 class="section-title fade-in">Success Stories & Guides</h2>
+            
+            <div class="video-grid">
+                <div class="video-card fade-in">
+                    <div class="video-thumbnail" onclick="openModal('modal1')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-duration">3:24</div>
+                    </div>
+                    <div class="video-content">
+                        <div class="video-category">Getting Started</div>
+                        <h3 class="video-title">Platform Navigation Guide</h3>
+                        <p class="video-description">Learn how to navigate through Konnectia's features and make the most of your academic journey.</p>
+                        <div class="video-stats">
+                            <span><i class="fas fa-eye"></i> 12.5K views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 98% liked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card fade-in">
+                    <div class="video-thumbnail" onclick="openModal('modal2')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-duration">5:17</div>
+                    </div>
+                    <div class="video-content">
+                        <div class="video-category">Success Story</div>
+                        <h3 class="video-title">From Freshman to Industry Leader</h3>
+                        <p class="video-description">Sarah's inspiring journey from a first-year student to landing her dream job at a top tech company.</p>
+                        <div class="video-stats">
+                            <span><i class="fas fa-eye"></i> 8.3K views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 95% liked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card fade-in">
+                    <div class="video-thumbnail" onclick="openModal('modal3')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-duration">4:42</div>
+                    </div>
+                    <div class="video-content">
+                        <div class="video-category">Tutorial</div>
+                        <h3 class="video-title">Collaboration Tools Masterclass</h3>
+                        <p class="video-description">Master the art of online collaboration using Konnectia's advanced tools and features.</p>
+                        <div class="video-stats">
+                            <span><i class="fas fa-eye"></i> 15.2K views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 97% liked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card fade-in">
+                    <div class="video-thumbnail" onclick="openModal('modal4')">
+                        <div class="play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="video-duration">6:33</div>
+                    </div>
+                    <div class="video-content">
+                        <div class="video-category">Career Development</div>
+                        <h3 class="video-title">Building Your Professional Network</h3>
+                        <p class="video-description">Expert tips on networking, mentorship, and building lasting professional relationships.</p>
+                        <div class="video-stats">
+                            <span><i class="fas fa-eye"></i> 9.7K views</span>
+                            <span><i class="fas fa-thumbs-up"></i> 92% liked</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Modals -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal1')">&times;</span>
+            <div class="modal-video">
+                <p>🎥 Platform Navigation Guide Video<br>
+                <small>Replace this with your actual video embed code</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal2')">&times;</span>
+            <div class="modal-video">
+                <p>🎥 Success Story Video<br>
+                <small>Replace this with your actual video embed code</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal3')">&times;</span>
+            <div class="modal-video">
+                <p>🎥 Collaboration Tools Tutorial<br>
+                <small>Replace this with your actual video embed code</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal4')">&times;</span>
+            <div class="modal-video">
+                <p>🎥 Professional Network Building<br>
+                <small>Replace this with your actual video embed code</small></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Floating particles animation
+        const particlesContainer = document.getElementById('particles');
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            particlesContainer.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+        
+        setInterval(createParticle, 200);
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Spotlight card interactions
+        document.querySelectorAll('.spotlight-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-20px) scale(1.05)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Dynamic navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>

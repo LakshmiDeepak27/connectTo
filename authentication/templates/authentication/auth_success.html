@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Success</title>
+</head>
+<body>
+    <p>Logging you in...</p>
+    <script>
+        console.log('auth_success.html script started');
+        try {
+            // Get tokens from Django template context
+            const accessToken = "{{ access_token }}";
+            const refreshToken = "{{ refresh_token }}";
+
+            console.log('Tokens received from template context:', { accessToken, refreshToken });
+
+            if (!accessToken || !refreshToken || accessToken === 'None' || refreshToken === 'None') {
+                console.error('Access or Refresh token is missing or invalid.', { accessToken, refreshToken });
+                throw new Error('Tokens not received from server');
+            }
+
+            // Store tokens in localStorage
+            localStorage.setItem('token', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            console.log('Tokens stored successfully in localStorage:', {
+                token: localStorage.getItem('token'),
+                refreshToken: localStorage.getItem('refreshToken')
+            });
+
+            // Redirect to the React profile page
+            window.location.href = 'http://localhost:5137/profile/me';
+        } catch (error) {
+            console.error('Error during token handling in auth_success.html:', error);
+            alert('Error during login. Please try again.');
+            window.location.href = 'http://localhost:8000/signin/';
+        }
+        console.log('auth_success.html script finished');
+    </script>
+</body>
+</html> 

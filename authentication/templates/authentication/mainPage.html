@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page - Konnectia</title>
+    <link rel="stylesheet" href="{% static 'authentication/style1.css' %}" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Konnectia</div>
+        <div class="user-info">
+            <span>Welcome, {{ request.user.first_name }}!</span>
+            <div class="login-details">
+                <p>Logged in via: {{ login_method|title }}</p>
+                <p>Last login: {{ last_login_time|date:"F j, Y, g:i a" }}</p>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#">Profile</a>
+            <a href="#">Messages</a>
+            <a href="{% url 'user_logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <strong>Message:</strong> {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+
+        <h1>Welcome to Konnectia</h1>
+        <p>You are logged in as {{ request.user.username }}</p>
+        <!-- Add your main page content here -->
+    </div>
+</body>
+</html> 
